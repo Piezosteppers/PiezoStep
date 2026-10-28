@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="PIEZOSTEP: historia, funcionamiento y usos de la piezoelectricidad. Proyecto de la Escuela Técnica Luciano Reyes, Campana, Buenos Aires.">
+<title>PIEZOSTEP — presión que se vuelve electricidad</title>
+<style>
+:root{--bg:#eaf3fd;--fg:#1f3558;--card:#ffffff;--line:#d3d9e6;--acc:#3a7bd5;--acc2:#8cc0f5;--muted:#5f7396;--on:#fff;--soft:#3d5273;--slot:#dbe9fb;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--fg);font:17px/1.65 "Helvetica Neue",Helvetica,Arial,sans-serif;background:var(--bg)}
+h1,h2,h3,button,.mono{font-family:"Courier New",Courier,monospace}
+.wrap{max-width:1000px;margin:auto;padding:0 18px}
+.hero{position:relative;min-height:92vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero svg.bg{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.hero .wrap{position:relative}
+h1{font-size:clamp(2.4rem,11.5vw,7.5rem);line-height:.9;margin:0;color:transparent;-webkit-text-stroke:2px var(--fg);letter-spacing:-.04em}
+h1 b{color:var(--acc);-webkit-text-stroke:0}
+.sub{max-width:520px;color:var(--muted);margin:18px 0}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a{color:var(--fg);text-decoration:none;border:1px solid var(--line);padding:6px 14px;font:13px "Courier New",monospace;text-transform:uppercase;letter-spacing:.1em;background:var(--card)}
+nav a:hover{background:var(--acc);color:var(--on)}
+section{padding:70px 0;border-bottom:1px solid var(--line)}
+h2{font-size:clamp(1.4rem,4.5vw,2.3rem);margin:0 0 20px;text-transform:uppercase;letter-spacing:-.01em;background:var(--acc);color:#fff;padding:14px 18px;border-left:10px solid var(--acc2)}
+h2 i{color:#e3f0ff;font-style:normal;font-size:.5em;display:block;letter-spacing:.2em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:20px 0}
+.cell{background:var(--card);padding:18px}
+.mono{font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.12em}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--fg);padding:8px 16px;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+button.on,button:hover{background:var(--acc);color:var(--on);border-color:var(--acc)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.slot{display:block;position:relative;aspect-ratio:4/5;background:var(--slot);border:1px dashed #3a7bd5;cursor:pointer;overflow:hidden;margin-bottom:12px}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1)}
+.slot svg{width:100%;height:100%}
+.slot span{position:absolute;bottom:6px;left:8px;font:11px "Courier New",monospace;color:var(--muted);background:var(--card);padding:2px 6px}
+.slot input{display:none}
+.cell h3{margin:.1em 0;font-size:1.15rem}
+.cell p{margin:.3em 0;color:var(--soft);font-size:15px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.big{font:700 clamp(2.5rem,9vw,5rem)/1 "Courier New",monospace;color:var(--acc)}
+.read{display:flex;justify-content:space-between;font:14px "Courier New",monospace;color:var(--acc2)}
+.fig svg{width:100%;height:150px}
+.fig.hide,.use.hide{display:none}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.ok{background:#2e9e5b!important;color:#fff!important}.bad{background:var(--acc2)!important;color:#fff!important}
+#lb{position:fixed;inset:0;background:#000e;display:none;align-items:center;justify-content:center;z-index:9;padding:20px}
+#lb img{max-width:100%;max-height:100%}
+footer{text-align:center;color:var(--muted);padding:34px 18px;font:12px "Courier New",monospace;text-transform:uppercase;letter-spacing:.15em}
+.top{background:var(--acc);color:#fff;text-align:center;padding:12px 14px;font:700 13px "Courier New",monospace;letter-spacing:.18em;text-transform:uppercase}
+.start{display:flex;gap:44px;align-items:center;flex-wrap:wrap;margin-bottom:28px}
+.circ{width:clamp(200px,36vw,280px);aspect-ratio:1;border-radius:50%;border:6px solid var(--acc);background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;box-shadow:0 0 0 14px #3a7bd514}
+.circ img{width:100%;height:100%;object-fit:contain;padding:12%}.circ svg{width:55%}
+.bat{text-align:center;cursor:pointer;user-select:none}
+.bat svg{width:110px;height:185px;display:block;margin:auto;transition:transform .12s}
+.bat.p svg{transform:scale(1.08)}
+#bf{fill:#22c55e}
+body{position:relative}
+#cab{position:absolute;top:0;left:0;width:100%;height:0;pointer-events:none;z-index:4;overflow:visible}
+#cf{transition:stroke-dashoffset .4s}
+#cs{stroke:#fff;stroke-width:2;stroke-dasharray:1 14;opacity:0;animation:fl 1s linear infinite;transition:opacity .4s}
+@keyframes fl{to{stroke-dashoffset:-30}}
+.bigbtn{transition:opacity .6s,transform .6s}
+.bigbtn.lock{visibility:hidden;opacity:0;transform:scale(.8)}
+.cf{position:fixed;top:-20px;z-index:9;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+.in{font:15px Helvetica,Arial,sans-serif;padding:10px;border:1px solid var(--line);background:#fff;color:var(--fg);border-radius:0;flex:1;min-width:140px}
+.bigbtn{font-size:16px;padding:16px 28px;background:var(--acc);color:#fff;border-color:var(--acc)}
+.wide{display:block;position:relative;aspect-ratio:16/9;border:3px dashed var(--acc);background:var(--slot);cursor:pointer;overflow:hidden}
+.wide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wide span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 14px "Courier New",monospace;color:var(--acc);text-transform:uppercase}
+.names{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.nm{background:var(--card);padding:14px;text-align:center;font-weight:700;color:var(--acc)}
+</style>
+</head>
+<body>
+<svg id="cab" aria-hidden="true"><path id="cb" fill="none" stroke="#b9cbe6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path id="cf" fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path id="cs" fill="none" stroke-linecap="round"/></svg>
+<div class="top">Escuela Técnica Luciano Reyes · Campana, Buenos Aires</div>
+<header class="hero">
+<svg class="bg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<g fill="none" stroke="#3a7bd5" stroke-opacity=".25"><circle cx="780" cy="300" r="90"/><circle cx="780" cy="300" r="170"/><circle cx="780" cy="300" r="260"/><circle cx="780" cy="300" r="360"/></g>
+<path d="M650 60 880 540M720 20 960 480" stroke="#3a7bd5" stroke-opacity=".25" stroke-width="2"/>
+<rect x="820" y="90" width="120" height="120" fill="none" stroke="#2b7de9" stroke-opacity=".5" transform="rotate(20 880 150)"/>
+<path id="wv" d="" fill="none" stroke="#3a7bd5" stroke-width="2.5"/></svg>
+<div class="wrap">
+<div class="start">
+<div><label class="circ" title="Toca para cargar el logo"><svg viewBox="0 0 60 70"><path d="M30 4 54 12v22c0 16-10 28-24 32C16 62 6 50 6 34V12z" fill="none" stroke="#3a7bd5" stroke-width="3"/><text x="30" y="40" text-anchor="middle" font-size="11" font-family="monospace" fill="#3a7bd5">LOGO</text></svg><input id="lgi" type="file" accept="image/*" hidden></label><div class="mono" id="lh" style="text-align:center;margin-top:10px;color:var(--muted)">Toca el círculo para cargar el logo</div></div>
+<div><div class="bat" id="bat"><svg viewBox="0 0 120 200"><rect x="45" y="2" width="30" height="14" rx="3" fill="#3a7bd5"/><rect x="12" y="16" width="96" height="180" rx="12" fill="none" stroke="#3a7bd5" stroke-width="6"/><rect id="bf" x="21" y="186" width="78" height="0" rx="4"/><path d="M66 60 44 112h18l-8 40 26-56H62z" fill="#fff" stroke="#3a7bd5" stroke-width="2"/></svg><div class="big" id="bv" style="font-size:2.6rem">0 V</div><div class="mono" id="bh" style="color:var(--muted)">Toca la batería para cargarla</div></div><button id="br" style="margin-top:8px">Vaciar</button></div>
+</div>
+<div class="mono">Efecto piezoeléctrico · 1880 → hoy</div>
+<h1>PIEZO<b>STEP</b></h1>
+<p class="sub">Aprieta un cristal y nace electricidad. Aplícale electricidad y se deforma. Mueve el mouse (o el dedo) para agitar la onda.</p>
+<nav><a href="#gente">Personas</a><a href="#tiempo">Tiempo</a><a href="#demo">Simulador</a><a href="#galeria">Galería</a><a href="#usos">Usos</a><a href="#quiz">Quiz</a></nav>
+</div></header>
+
+<div class="wrap">
+<section data-th="w" id="gente">
+<h2><i>01</i>Quiénes lo crearon</h2>
+<p style="color:var(--muted)">Toca cada recuadro para cargar la foto real de esa persona desde tu dispositivo. Se mostrará en blanco y negro. Las fotos solo se ven en tu pantalla.</p>
+<div class="grid" id="ppl"></div>
+</section>
+
+<section data-th="b" id="tiempo">
+<h2><i>02</i>Viaja en el tiempo</h2>
+<div class="cell" style="border:1px solid var(--line)">
+<div class="big" id="yr">1880</div>
+<input id="ys" type="range" min="1880" max="2026" value="1880">
+<h3 id="et" style="margin:.4em 0 0"></h3><p id="ed" style="color:var(--soft);margin:.2em 0"></p>
+</div></section>
+
+<section data-th="w" id="demo">
+<h2><i>03</i>Simulador</h2>
+<div class="row"><button id="mD" class="on">Directo: presión → voltaje</button><button id="mI">Inverso: voltaje → deformación</button></div>
+<div class="cell" style="border:1px solid var(--line)">
+<svg viewBox="0 0 400 250" style="width:100%;max-height:290px" aria-label="Cristal">
+<rect x="130" y="20" width="140" height="10" fill="#7f93c4" id="ptop"/>
+<g id="cr" style="transform-origin:200px 135px"><rect x="150" y="55" width="100" height="160" fill="none" stroke="#3a7bd5" stroke-width="3"/><path d="M150 95h100M150 135h100M150 175h100M175 55v160M225 55v160" stroke="#3a7bd5" opacity=".25"/></g>
+<rect x="150" y="220" width="100" height="10" fill="#7f93c4"/>
+<g id="ch" font-family="monospace" font-size="28" font-weight="700" opacity="0"><text x="112" y="82" fill="#2b7de9">+</text><text x="268" y="82" fill="#2b7de9">+</text><text x="112" y="204" fill="#fff">−</text><text x="268" y="204" fill="#fff">−</text></g>
+<circle id="led" cx="340" cy="135" r="22" fill="#3a7bd5" opacity=".1"/>
+</svg>
+<label for="f" id="lab" class="mono">Fuerza aplicada</label>
+<input id="f" type="range" min="0" max="100" value="0">
+<div class="read"><span id="out1">0 V</span><span id="out2">Sin presión</span></div>
+<div class="mono" style="color:var(--muted);margin-top:6px">Valores ilustrativos</div>
+</div></section>
+
+<section data-th="b" id="galeria">
+<h2><i>04</i>Antes y ahora</h2>
+<div class="row" id="gf"><button class="on" data-g="all">Todo</button><button data-g="1880">Antiguo</button><button data-g="hoy">Moderno</button></div>
+<div class="grid" id="figs"></div>
+<h3 class="mono" style="margin-top:34px">Tu galería de fotos</h3>
+<p style="color:var(--muted);margin:.2em 0">Agrega fotos de piezoeléctricos viejos y nuevos. Toca una para verla grande.</p>
+<label><button onclick="this.nextElementSibling.click()">Agregar fotos</button><input id="up" type="file" accept="image/*" multiple hidden></label>
+<div class="grid" id="mine" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))"></div>
+</section>
+
+<section data-th="w" id="usos">
+<h2><i>05</i>Dónde se usa hoy</h2>
+<div class="row" id="flt"><button class="on" data-t="all">Todo</button><button data-t="Salud">Salud</button><button data-t="Hogar">Hogar</button><button data-t="Industria">Industria</button><button data-t="Ciencia">Ciencia</button></div>
+<div class="grid" id="uses"></div>
+</section>
+
+<section data-th="b" id="quiz" style="border:0">
+<h2><i>06</i>Quiz</h2>
+<div class="cell" style="border:1px solid var(--line)" id="qz"></div>
+</section>
+<section id="fin" style="border:0;text-align:center"><div class="mono" id="lockh" style="color:var(--muted);margin-bottom:12px">Carga la batería del inicio para desbloquear</div><button class="bigbtn lock" id="showT">Ver integrantes del proyecto</button>
+<div id="team" hidden style="text-align:left"><h2><i>07</i>Integrantes</h2>
+<label class="wide"><span id="tph">Toca para cargar la foto del grupo</span><input id="tp" type="file" accept="image/*" hidden></label>
+<div class="names"><div class="nm" contenteditable>Integrante 1</div><div class="nm" contenteditable>Integrante 2</div><div class="nm" contenteditable>Integrante 3</div><div class="nm" contenteditable>Integrante 4</div><div class="nm" contenteditable>Integrante 5</div></div>
+<p class="mono" style="color:var(--muted)">Toca cada nombre para escribirlo</p>
+<h2 style="margin-top:44px"><i>08</i>Qué les pareció el proyecto</h2>
+<div class="cell" style="border:1px solid var(--line)"><div class="row"><input id="on" class="in" maxlength="40" placeholder="Tu nombre"><select id="or" class="in"><option>Integrante</option><option>Profesor/a</option></select></div><textarea id="ot" class="in" maxlength="400" rows="3" placeholder="Escribí qué te pareció el proyecto" style="width:100%"></textarea><div class="row"><button id="os">Publicar opinión</button><span id="om" class="mono" style="color:var(--muted)"></span></div></div>
+<div id="ol"></div></div></section>
+</div>
+<div id="lb" onclick="this.style.display='none'"><img alt="Foto ampliada"></div>
+<footer>Escuela Técnica Luciano Reyes · Campana, Buenos Aires<br>PIEZOSTEP · del cuarzo al chip</footer>
+
+<script>
+const $=s=>document.querySelector(s);
+// Onda hero
+const wv=$('#wv');let amp=40,tgt=40,t=0;
+addEventListener('pointermove',e=>{tgt=20+(e.clientY/innerHeight)*120});
+(function loop(){t+=.03;amp+=(tgt-amp)*.05;let d='M0 300';for(let x=0;x<=1000;x+=10)d+=`L${x} ${300+Math.sin(x*.02+t)*amp*Math.sin(x*.003+1)}`;wv.setAttribute('d',d);requestAnimationFrame(loop)})();
+
+// Personas
+const P=[["Pierre Curie","1859–1906","Co-descubridor (1880)","Físico francés. Junto con su hermano halló la piezoelectricidad y luego ganó el Nobel de Física de 1903 por la radiactividad."],
+["Jacques Curie","1855–1941","Co-descubridor (1880)","Mineralogista y físico. Trabajó con Pierre en cristales de cuarzo, turmalina y sal de Rochela."],
+["Gabriel Lippmann","1845–1921","Efecto inverso (1881)","Predijo con teoría que un voltaje deforma el cristal. Los Curie lo comprobaron."],
+["Paul Langevin","1872–1946","Primer sonar (1917)","Usó cuarzo para emitir y detectar ultrasonido bajo el agua."],
+["Walter Cady","1874–1974","Oscilador de cuarzo (1921)","Creó el oscilador de cristal, base de los relojes y radios estables."],
+["Bernard Jaffe","1915–1999","Cerámica PZT (1952)","Su equipo desarrolló el PZT, el material piezoeléctrico más usado hoy."]];
+$('#ppl').innerHTML=P.map((p,i)=>`<div class="cell"><label class="slot"><svg viewBox="0 0 160 200"><g fill="none" stroke="#7f93c4" stroke-width="2"><circle cx="80" cy="75" r="34"/><path d="M20 200c4-55 34-78 60-78s56 23 60 78"/><path d="M${30+i*8} 20l60 40M100 10l${30-i*4} 50" stroke="#3a7bd5" stroke-opacity=".5"/></g></svg><span>+ Agregar foto</span><input type="file" accept="image/*"></label><div class="mono">${p[2]}</div><h3>${p[0]}</h3><div class="mono" style="color:var(--muted)">${p[1]}</div><p>${p[3]}</p></div>`).join('');
+document.querySelectorAll('.slot input').forEach(inp=>inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const s=inp.parentNode;let im=s.querySelector('img');if(!im){im=document.createElement('img');im.alt='Foto';s.prepend(im)}im.src=r.result;s.querySelector('span').textContent='Cambiar foto'};r.readAsDataURL(f)});
+
+// Tiempo
+const E=[[1880,"Descubrimiento","Los hermanos Curie miden carga eléctrica en cuarzo, turmalina y sal de Rochela al comprimirlos."],[1881,"Efecto inverso","Lippmann lo predice; los Curie lo confirman. Hankel propone el nombre «piezoelectricidad»."],[1917,"Sonar","Langevin usa un sándwich de cuarzo para ultrasonido submarino."],[1921,"Oscilador de cuarzo","Cady crea el oscilador de cristal para controlar frecuencias."],[1940,"Cerámicas","Aparece el titanato de bario, moldeable en cualquier forma."],[1952,"PZT","Se desarrolla el zirconato titanato de plomo, aún dominante."],[1980,"Microscopía","Los piezos mueven puntas con precisión atómica en STM y AFM."],[2010,"MEMS","Sensores y actuadores piezoeléctricos integrados en chips."],[2026,"Hoy","Recolección de energía, háptica, ultrasonido portátil y más."]];
+function tm(){const y=+$('#ys').value;let e=E[0];E.forEach(x=>{if(x[0]<=y)e=x});$('#yr').textContent=y;$('#et').textContent=e[0]+' · '+e[1];$('#ed').textContent=e[2]}
+$('#ys').oninput=tm;tm();
+
+// Simulador
+let mode='d';const f=$('#f');
+function upd(){const v=+f.value/100,cr=$('#cr');
+if(mode==='d'){cr.style.transform=`scale(${1+v*.1},${1-v*.28})`;$('#ptop').setAttribute('y',20+v*38);$('#ch').style.opacity=v;$('#led').setAttribute('opacity',.1+v*.9);$('#out1').textContent=Math.round(v*3000)+' V';$('#out2').textContent=v<.05?'Sin presión':v<.6?'Presión moderada':'Chispa';}
+else{cr.style.transform=`scale(1,${1+v*.25})`;$('#ptop').setAttribute('y',20-v*30);$('#ch').style.opacity=0;$('#led').setAttribute('opacity',.1);$('#out1').textContent=Math.round(v*1000)+' V';$('#out2').textContent=v<.05?'Sin cambio':'El cristal se estira (exagerado)';}}
+function setM(m){mode=m;$('#mD').classList.toggle('on',m==='d');$('#mI').classList.toggle('on',m==='i');$('#lab').textContent=m==='d'?'Fuerza aplicada':'Voltaje aplicado';f.value=0;upd()}
+$('#mD').onclick=()=>setM('d');$('#mI').onclick=()=>setM('i');f.oninput=upd;upd();
+
+// Galeria SVG
+const S='stroke="#3a7bd5" stroke-width="2.5" fill="none"';
+const F=[["1880","Cristal de cuarzo","Prisma hexagonal natural, tal como lo usaron los Curie.",`<path d="M70 120l20-70h60l20 70-20 25H90z" ${S}/><path d="M90 50l-20 70M150 50l40 70M90 145l20-95M170 145l-20-95" stroke="#7f93c4" fill="none"/>`],
+["1880","Electrómetro de los Curie","Medía cargas minúsculas con una aguja y láminas de estaño.",`<circle cx="120" cy="80" r="45" ${S}/><path d="M120 80l28-28" stroke="#2b7de9" stroke-width="3"/><path d="M60 140h120M120 125v15" ${S}/>`],
+["1880","Sonar de Langevin (1917)","Mosaico de cuarzo entre dos placas de acero.",`<path d="M60 40h30v90H60zM150 40h30v90h-30z" ${S}/><path d="M90 60h60M90 85h60M90 110h60" stroke="#7f93c4" stroke-width="6"/><path d="M190 85q20-20 0-40M200 105q35-40 0-80" stroke="#2b7de9" fill="none"/>`],
+["hoy","Disco cerámico PZT","El corazón de buzzers y sensores.",`<circle cx="120" cy="80" r="55" fill="#3a7bd5"/><circle cx="120" cy="80" r="35" fill="#7f93c4"/><circle cx="120" cy="80" r="7" fill="#ffffff"/>`],
+["hoy","Sonda de ecografía","Cientos de elementos piezo en fila emiten y reciben ultrasonido.",`<rect x="85" y="30" width="70" height="60" rx="8" ${S}/><path d="M95 90v38h50V90M100 110h40" ${S}/><path d="M100 128h40" stroke="#2b7de9" stroke-width="6"/>`],
+["hoy","Chip MEMS","Piezoeléctrico microscópico sobre silicio.",`<rect x="75" y="30" width="90" height="90" ${S}/><rect x="100" y="55" width="40" height="40" fill="#3a7bd5"/><path d="M75 50h-15M75 80h-15M75 105h-15M165 50h15M165 80h15M165 105h15" ${S}/>`]];
+function showF(g){$('#figs').innerHTML=F.filter(x=>g==='all'||x[0]===g).map(x=>`<div class="cell fig"><svg viewBox="0 0 240 160">${x[3]}</svg><div class="mono">${x[0]==='hoy'?'Moderno':'Antiguo'}</div><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join('')}
+document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-g]').forEach(x=>x.classList.toggle('on',x===b));showF(b.dataset.g)});showF('all');
+$('#up').onchange=e=>[...e.target.files].forEach(f=>{const r=new FileReader();r.onload=()=>{const d=document.createElement('div');d.className='cell';d.style.padding='4px';d.innerHTML=`<img src="${r.result}" alt="Foto agregada" style="width:100%;height:130px;object-fit:cover;cursor:pointer;filter:grayscale(.6)">`;d.firstChild.onclick=()=>{$('#lb img').src=r.result;$('#lb').style.display='flex'};$('#mine').append(d)};r.readAsDataURL(f)});
+
+// Usos
+const U=[["Encendedor de cocina","Hogar","Un golpe seco al cristal genera una chispa."],["Reloj de cuarzo","Hogar","Vibra 32 768 veces por segundo y marca el tiempo."],["Ecografía","Salud","Emite y recibe ultrasonido para formar imágenes."],["Impresora de inyección","Industria","Expulsa gotas de tinta al deformarse."],["Inyectores y sensores","Industria","Controlan el combustible y detectan golpes."],["Microscopio STM","Ciencia","Mueve la punta con precisión de átomos."],["Micrófonos y buzzers","Hogar","Convierten sonido en señal y viceversa."],["Sonar","Ciencia","Detecta objetos y el fondo marino."]];
+function showU(t){$('#uses').innerHTML=U.map((u,i)=>[u,i]).filter(([u])=>t==='all'||u[1]===t).map(([u,i])=>`<div class="cell"><div class="mono">${String(i+1).padStart(2,'0')} · ${u[1]}</div><h3>${u[0]}</h3><p>${u[2]}</p></div>`).join('')}
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('on',x===b));showU(b.dataset.t)});showU('all');
+
+// Quiz
+const Q=[["¿En qué año descubrieron el efecto los Curie?",["1780","1880","1952"],1],["¿Qué material es el más usado hoy?",["PZT","Madera","Vidrio común"],0],["¿Qué hace el efecto inverso?",["Genera calor","Deforma el cristal con voltaje","Crea imanes"],1],["¿Quién usó cuarzo para el primer sonar?",["Langevin","Cady","Jaffe"],0]];
+let qi=0,sc=0;
+function ask(){const z=$('#qz');if(qi>=Q.length){z.innerHTML=`<h3>Puntaje: ${sc}/${Q.length}</h3><button id="rs">Reintentar</button>`;$('#rs').onclick=()=>{qi=0;sc=0;ask()};return}
+const q=Q[qi];z.innerHTML=`<div class="mono">Pregunta ${qi+1}/${Q.length}</div><h3>${q[0]}</h3>`+q[1].map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('');
+z.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===q[2];if(ok)sc++;z.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add('ok')});if(!ok)b.classList.add('bad');setTimeout(()=>{qi++;ask()},1100)})}
+ask();
+$('#lgi').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const l=$('.circ');let im=l.querySelector('img');if(!im){im=document.createElement('img');im.alt='Logo de la escuela';l.prepend(im)}im.src=r.result;l.querySelector('svg').style.display='none'};r.readAsDataURL(f)};
+
+$('#lgi').addEventListener('change',()=>$('#lh').remove());
+let V=0;const MAX=9;
+const bf=$('#bf'),btn=$('#showT');
+function lvl(){const c=$('#cf');if(c.L)c.style.strokeDashoffset=c.L*(1-V/MAX)}
+function cable(){const sv=$('#cab');sv.style.height='0';const H=document.documentElement.scrollHeight,W=document.documentElement.clientWidth;sv.style.height=H+'px';sv.setAttribute('viewBox','0 0 '+W+' '+H);
+const b=$('#bat svg').getBoundingClientRect(),t=btn.getBoundingClientRect(),sx=b.left+scrollX+b.width*.9,sy=b.top+scrollY+b.height*.53,tx=t.right+scrollX,ty=t.top+scrollY+t.height/2,xr=W-12;
+const d='M'+sx+' '+sy+'H'+xr+'V'+ty+'H'+tx;['cb','cf','cs'].forEach(i=>$('#'+i).setAttribute('d',d));
+const c=$('#cf'),L=c.getTotalLength();c.L=L;c.style.strokeDasharray=L;lvl()}
+function confetti(){for(let i=0;i<70;i++){const e=document.createElement('i');e.className='cf';e.style.cssText='left:'+Math.random()*100+'vw;background:hsl('+Math.random()*360+',85%,55%);animation-duration:'+(2+Math.random()*2)+'s;animation-delay:'+Math.random()*.6+'s;width:'+(6+Math.random()*6)+'px;height:'+(10+Math.random()*8)+'px';document.body.append(e);setTimeout(()=>e.remove(),4800)}}
+function bat(){const h=158*V/MAX,full=V>=MAX;bf.setAttribute('height',h);bf.setAttribute('y',186-h);$('#bv').textContent=(V%1?V.toFixed(1):V)+' V';
+$('#bh').innerHTML=full?'¡Carga completa! Bajá hasta el final ↓<br>el equipo te espera':'Toca la batería para cargarla';$('#bh').style.color=full?'#16a34a':'var(--muted)';
+btn.classList.toggle('lock',!full);$('#lockh').hidden=full;$('#cs').style.opacity=full?.9:0;lvl()}
+$('#bat').onclick=()=>{const was=V;V=Math.min(MAX,V+.5);bat();$('#bat').classList.add('p');setTimeout(()=>$('#bat').classList.remove('p'),120);if(was<MAX&&V>=MAX)confetti()};
+$('#br').onclick=()=>{V=0;bat()};
+cable();bat();addEventListener('resize',cable);new ResizeObserver(cable).observe(document.body);
+// Opiniones
+let mem=[],col=null;
+function rend(list){$('#ol').replaceChildren(...list.map(x=>{const d=document.createElement('div');d.className='cell';d.style.cssText='border:1px solid var(--line);margin-top:10px';const a=document.createElement('div');a.className='mono';a.textContent=String(x.role||'')+' · '+String(x.name||'');const p=document.createElement('p');p.textContent=String(x.text||'');d.append(a,p);return d}))}
+function loc(){try{mem=JSON.parse(localStorage.getItem('op')||'[]')}catch(e){mem=[]}$('#om').textContent='Se guardan solo en este dispositivo.';rend(mem)}
+(async()=>{let db=null;try{if(window.claude)db=await claude.use('db')}catch(e){}
+if(db){col=db.collection('opiniones');col.orderBy('ts','desc').limit(100).onSnapshot(s=>rend(s.docs.map(d=>d.data())),()=>{col=null;loc()});$('#om').textContent='Las opiniones las ve todo el que abra la página.'}else loc()})();
+$('#os').onclick=async()=>{const n=$('#on').value.trim(),t=$('#ot').value.trim();if(!n||!t){$('#om').textContent='Falta tu nombre o tu opinión.';return}
+const o={name:n,role:$('#or').value,text:t,ts:Date.now()};
+try{if(col)await col.add(o);else throw 0}catch(e){col=null;mem.unshift(o);try{localStorage.setItem('op',JSON.stringify(mem.slice(0,50)))}catch(x){}rend(mem);$('#om').textContent='Se guardó solo en este dispositivo.'}
+$('#ot').value=''}
+$('#showT').onclick=()=>{$('#team').hidden=false;$('#team').scrollIntoView({behavior:'smooth'})};
+$('#tp').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const l=$('.wide');let im=l.querySelector('img');if(!im){im=document.createElement('img');im.alt='Foto de los integrantes';l.prepend(im)}im.src=r.result;$('#tph').style.display='none'};r.readAsDataURL(f)};
+</script>
+</body>
+</html>
